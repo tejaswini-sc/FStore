@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="home-page">
+
+<nav class="navbar">
+    <h1>Fashion-BrandStore</h1>
+
+    <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="homepage.html">Brands</a></li>
+        <li><a href="wishlist.html">Wishlist</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+        <li>
+            <button onclick="toggleTheme()" class="theme-btn">
+                🌙
+            </button>
+        </li>
+    </ul>
+</nav>
+
+<section class="profile-new">
+
+    <div class="profile-left-card">
+        <div class="profile-banner"></div>
+
+        <div class="profile-avatar" id="avatar"></div>
+
+        <h2 id="profileName"></h2>
+        <p id="profileEmail"></p>
+        <p id="profilePhone"></p>
+
+        <button>Edit Profile</button>
+    </div>
+
+    <div class="profile-right">
+
+        <div class="small-box">
+            <h3>Total Orders</h3>
+            <h2 id="orderCount">0</h2>
+        </div>
+
+        <div class="small-box">
+            <h3>Wishlist</h3>
+            <h2 id="wishlistCount">0</h2>
+        </div>
+
+        <div class="small-box">
+            <h3>Cart Items</h3>
+            <h2 id="cartCount">0</h2>
+        </div>
+
+        <div class="large-box">
+            <h2>Saved Address</h2>
+            <p id="profileAddress"></p>
+        </div>
+
+        <div class="large-box">
+            <h2>Recent Orders</h2>
+            <p>Rolex Luxury Watch - Delivered</p>
+            <p>Nike Sneakers - Shipped</p>
+            <p>Lakme Lipstick - Processing</p>
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+let savedName = localStorage.getItem("profileName") || "Fashion User";
+let savedEmail = localStorage.getItem("loggedUser") || "No Email";
+let savedPhone = localStorage.getItem("profilePhone") || "+91 0000000000";
+let savedAddress = localStorage.getItem("profileAddress") || "No Address Saved";
+
+document.getElementById("profileName").innerText = savedName;
+document.getElementById("profileEmail").innerText = savedEmail;
+document.getElementById("profilePhone").innerText = savedPhone;
+document.getElementById("profileAddress").innerText = savedAddress;
+
+let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+let wishlistItems =
+	JSON.parse(localStorage.getItem("wishItems")) || [];
+	
+document.getElementById("cartCount").innerText = cartItems.length;
+document.getElementById("wishlistCount").innerText = wishlistItems.length;
+
+let orders =
+	JSON.parse(localStorage.getItem("orders")) || [];
+
+	document.getElementById("orderCount").innerText =
+	orders.length;
+	
+	document.getElementById("avatar").innerText =
+		savedName.charAt(0).toUpperCase();
+</script>
+<script>
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-mode");
+
+    if(document.body.classList.contains("light-mode")){
+
+        localStorage.setItem("theme","light");
+
+    }
+
+    else{
+
+        localStorage.setItem("theme","dark");
+
+    }
+
+}
+
+if(localStorage.getItem("theme") === "light"){
+
+    document.body.classList.add("light-mode");
+
+}
+function logout(){
+
+    localStorage.removeItem("loggedUser");
+
+    alert("Logged Out Successfully");
+
+    window.location.href = "login.html";
+}
+</script>
+</body>
+</html>

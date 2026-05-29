@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>AI Fashion Register</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="auth-page">
+
+    <div class="container">
+
+        <div class="login-box">
+
+            <h1>Create Account</h1>
+
+            <p>Join AI Fashion Platform</p>
+
+            <form onsubmit="registerUser(event)">
+
+                <input type="text"
+                id="name"
+                placeholder="Enter Full Name"
+                required>
+
+                <input type="email"
+                id="email"
+                placeholder="Enter Gmail"
+                required>
+
+                <input type="text"
+                id="phone"
+                placeholder="Enter Phone Number"
+                required>
+
+                <input type="text"
+                id="address"
+                placeholder="Enter Address"
+                required>
+
+                <input type="password"
+                id="password"
+                placeholder="Enter Password"
+                required>
+
+                <input type="password"
+                id="confirmPassword"
+                placeholder="Confirm Password"
+                required>
+
+                <button type="submit">Register</button>
+
+                <div class="links">
+                    <a href="login.html">Already have account?</a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+<script>
+
+async function registerUser(event){
+
+    event.preventDefault();
+
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let phone = document.getElementById("phone").value.trim();
+    let address = document.getElementById("address").value.trim();
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+
+    let namePattern = /^[A-Za-z ]+$/;
+    let emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    let phonePattern = /^[0-9]{10}$/;
+
+    if(!namePattern.test(name)){
+        alert("Name should contain only letters");
+        return;
+    }
+
+    if(name.length < 3){
+        alert("Name must contain minimum 3 letters");
+        return;
+    }
+
+    if(!emailPattern.test(email)){
+        alert("Enter valid Gmail");
+        return;
+    }
+
+    if(!phonePattern.test(phone)){
+        alert("Enter valid 10 digit phone number");
+        return;
+    }
+
+    if(address.length < 5){
+        alert("Enter proper address");
+        return;
+    }
+
+    if(password.length < 6){
+        alert("Password must contain minimum 6 characters");
+        return;
+    }
+
+    if(!/[A-Z]/.test(password)){
+        alert("Password must contain one capital letter");
+        return;
+    }
+
+    if(!/[0-9]/.test(password)){
+        alert("Password must contain one number");
+        return;
+    }
+
+    if(password !== confirmPassword){
+        alert("Passwords do not match");
+        return;
+    }
+
+    let formData = new URLSearchParams();
+
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("phone", phone);
+    formData.append("address", address);
+
+    try{
+
+        let response = await fetch(
+        "http://localhost:8080/AiFashionStores/register",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded"
+            },
+            body:formData
+        });
+
+        let result = await response.text();
+
+        if(result.includes("Successful")){
+            alert("Registration Successful");
+            localStorage.setItem("profileName", name);
+localStorage.setItem("profilePhone", phone);
+localStorage.setItem("profileAddress", address);
+            localStorage.setItem("loggedUser", email);
+            window.location.href = "login.html";
+        }
+        else{
+            alert("Registration Failed");
+        }
+
+    }
+    catch(error){
+        alert("Server Error");
+        console.log(error);
+    }
+}
+
+</script>
+
+</body>
+</html>

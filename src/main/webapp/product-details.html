@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="home-page">
+
+<nav class="navbar">
+    <h1>Fashion-BrandStore</h1>
+
+    <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="wishlist.html">Wishlist</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li>
+            <button onclick="toggleTheme()" class="theme-btn">
+                🌙
+            </button>
+        </li>
+        
+    </ul>
+</nav>
+
+<section class="details-section">
+
+    <div class="details-image">
+        <img id="detailImage">
+    </div>
+
+    <div class="details-info">
+        <h1 id="detailName"></h1>
+
+        <p class="price" id="detailPrice"></p>
+
+        <p id="detailRating">⭐ 4.8</p>
+
+        <p class="offer">Special Offer Available</p>
+
+        <p class="description">
+            This is a premium branded product with high quality design,
+            stylish appearance, durable material and modern fashion look.
+        </p>
+
+       <div class="product-buttons">
+
+    <button onclick="addToCart()">
+        Add to Cart
+    </button>
+
+    <button class="wishlist-btn"
+            onclick="addToWishlist()">
+        Wishlist
+    </button>
+
+</div>
+        <div class="review-section">
+
+            <h2>Customer Reviews</h2>
+
+            <select id="rating">
+
+                <option>⭐ 1</option>
+                <option>⭐ 2</option>
+                <option>⭐ 3</option>
+                <option>⭐ 4</option>
+                <option>⭐ 5</option>
+
+            </select>
+
+            <textarea
+            id="reviewText"
+            placeholder="Write Review"></textarea>
+
+            <button onclick="addReview()">
+
+                Submit Review
+
+            </button>
+
+            <div id="reviewContainer"></div>
+
+        </div>
+    </div>
+
+</section>
+
+<script>
+document.getElementById("detailName").innerText =
+localStorage.getItem("detailName");
+
+let imagePath =
+	localStorage.getItem("detailImage");
+
+	document.getElementById("detailImage").src =
+	"http://localhost:8080/AiFashionStores" + imagePath;
+
+document.getElementById("detailPrice").innerText =
+localStorage.getItem("detailPrice");
+
+function addReview(){
+
+    let rating =
+    document.getElementById("rating").value;
+
+    let review =
+    document.getElementById("reviewText").value;
+
+    let product =
+    localStorage.getItem("detailName");
+
+    let reviewData =
+    JSON.parse(localStorage.getItem(product)) || [];
+
+    reviewData.push({
+
+        rating: rating,
+
+        review: review
+
+    });
+
+    localStorage.setItem(
+        product,
+        JSON.stringify(reviewData)
+    );
+
+    loadReviews();
+
+    document.getElementById("reviewText").value = "";
+
+}
+
+function loadReviews(){
+
+    let product =
+    localStorage.getItem("detailName");
+
+    let reviewContainer =
+    document.getElementById("reviewContainer");
+
+    let reviewData =
+    JSON.parse(localStorage.getItem(product)) || [];
+
+    reviewContainer.innerHTML = "";
+
+    reviewData.forEach(function(item){
+
+        reviewContainer.innerHTML += `
+
+            <div class="review-card">
+
+                <h3>${item.rating}</h3>
+
+                <p>${item.review}</p>
+
+            </div>
+
+        `;
+    });
+
+}
+
+loadReviews();
+</script>
+<script>
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-mode");
+
+    if(document.body.classList.contains("light-mode")){
+
+        localStorage.setItem("theme","light");
+
+    }
+
+    else{
+
+        localStorage.setItem("theme","dark");
+
+    }
+
+}
+
+if(localStorage.getItem("theme") === "light"){
+
+    document.body.classList.add("light-mode");
+
+}
+function addToCart(){
+
+    let cartItems =
+    JSON.parse(localStorage.getItem("cartItems")) || [];
+
+    let product = {
+        name: localStorage.getItem("detailName"),
+        image: localStorage.getItem("detailImage"),
+        price: localStorage.getItem("detailPrice")
+    };
+
+    cartItems.push(product);
+
+    localStorage.setItem(
+        "cartItems",
+        JSON.stringify(cartItems)
+    );
+
+    alert("Product added to Cart");
+}
+
+function addToWishlist(){
+
+    let wishItems =
+    JSON.parse(localStorage.getItem("wishItems")) || [];
+
+    let product = {
+        name: localStorage.getItem("detailName"),
+        image: localStorage.getItem("detailImage"),
+        price: localStorage.getItem("detailPrice")
+    };
+
+    wishItems.push(product);
+
+    localStorage.setItem(
+        "wishItems",
+        JSON.stringify(wishItems)
+    );
+
+    alert("Product added to Wishlist");
+}
+
+</script>
+</body>
+</html>

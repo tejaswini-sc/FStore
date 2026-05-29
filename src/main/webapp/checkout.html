@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="home-page">
+
+<nav class="navbar">
+    <h1>Fashion-BrandStore</h1>
+    <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="homepage.html">Brands</a></li>
+        <li><a href="wishlist.html">Wishlist</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="login.html">Logout</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li>
+            <button onclick="toggleTheme()" class="theme-btn">
+                🌙
+            </button>
+        </li>
+        
+    </ul>
+</nav>
+
+<section class="checkout-section">
+
+    <div class="checkout-left">
+        <h1>Secure Checkout</h1>
+        <p>Complete your order with delivery and payment details.</p>
+
+            <div class="order-summary">
+
+                <h2>Order Summary</h2>
+
+                <div id="checkoutItems"></div>
+
+                <h3 id="checkoutTotal"></h3>
+
+            </div>
+    </div>
+
+    <div class="checkout-right">
+
+        <h2>Delivery Details</h2>
+
+        <form action="order-success.html">
+
+            <div class="form-row">
+                <input type="text" placeholder="Full Name" required>
+                <input type="text" placeholder="Mobile Number" required>
+            </div>
+
+            <input type="text" placeholder="Delivery Address" required>
+
+            <div class="form-row">
+                <input type="text" placeholder="City" required>
+                <input type="text" placeholder="Pincode" required>
+            </div>
+
+            <h2>Payment Method</h2>
+
+            <div class="payment-options">
+
+                <div class="payment-card" onclick="window.open('https://www.phonepe.com/','_blank')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg">
+                    <span>PhonePe</span>
+                </div>
+
+                <div class="payment-card" onclick="window.open('https://pay.google.com/','_blank')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/6124/6124998.png">
+                    <span>Google Pay</span>
+                </div>
+
+                <div class="payment-card" onclick="window.open('https://www.visa.co.in/','_blank')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png">
+                    <span>Visa</span>
+                </div>
+
+                <div class="payment-card" onclick="window.open('https://www.rupay.co.in/','_blank')">
+                    <img src="https://cdn.iconscout.com/icon/free/png-256/free-rupay-3-69845.png">
+                    <span>RuPay</span>
+                </div>
+
+                <div class="payment-card" onclick="window.open('https://paytm.com/','_blank')">
+                    <img src="https://cdn.iconscout.com/icon/free/png-256/free-paytm-226448.png">
+                    <span>Paytm</span>
+                </div>
+
+            </div>
+
+<button
+    type="button"
+    class="checkout-btn"
+    onclick="placeOrder()">
+
+    Pay Now
+
+</button>
+        </form>
+    </div>
+
+</section>
+<script>
+
+let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+let checkoutItems = document.getElementById("checkoutItems");
+
+let checkoutTotal = document.getElementById("checkoutTotal");
+
+let total = 0;
+
+if(cartItems.length > 0){
+
+    cartItems.forEach(function(item){
+
+        let quantity = item.qty || 1;
+
+        let priceNumber =
+        	parseFloat(
+        	    item.price
+        	        .replace("Rs.","")
+        	        .replace("₹","")
+        	        .replace(",","")
+        	        .trim()
+        	);
+
+        total = total + (priceNumber * quantity);
+
+        checkoutItems.innerHTML += `
+
+            <p>
+
+                ${item.name}
+                × ${quantity}
+                - ${item.price}
+
+            </p>
+
+        `;
+    });
+
+    checkoutTotal.innerText =
+    "Total: ₹" + total;
+
+}
+
+else{
+
+    checkoutItems.innerHTML =
+    "<p>No items in cart</p>";
+
+    checkoutTotal.innerText =
+    "Total: ₹0";
+
+}
+
+</script>
+<script>
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-mode");
+
+    if(document.body.classList.contains("light-mode")){
+
+        localStorage.setItem("theme","light");
+
+    }
+
+    else{
+
+        localStorage.setItem("theme","dark");
+
+    }
+
+}
+
+if(localStorage.getItem("theme") === "light"){
+
+    document.body.classList.add("light-mode");
+
+}
+function placeOrder(){
+
+    let cartItems =
+    JSON.parse(localStorage.getItem("cartItems")) || [];
+
+    // Check cart
+    if(cartItems.length === 0){
+        alert("Your cart is empty!");
+        return;
+    }
+
+    // Get form fields
+    let name =
+    document.querySelector('input[placeholder="Full Name"]').value;
+
+    let mobile =
+    document.querySelector('input[placeholder="Mobile Number"]').value;
+
+    let address =
+    document.querySelector('input[placeholder="Delivery Address"]').value;
+
+    let city =
+    document.querySelector('input[placeholder="City"]').value;
+
+    let pincode =
+    document.querySelector('input[placeholder="Pincode"]').value;
+
+    // Check empty fields
+    if(
+        name.trim() === "" ||
+        mobile.trim() === "" ||
+        address.trim() === "" ||
+        city.trim() === "" ||
+        pincode.trim() === ""
+    ){
+        alert("Please fill all delivery details.");
+        return;
+    }
+
+    // Mobile validation
+    if(mobile.length !== 10){
+        alert("Enter a valid 10-digit mobile number.");
+        return;
+    }
+
+    // Pincode validation
+    if(pincode.length !== 6){
+        alert("Enter a valid pincode.");
+        return;
+    }
+
+    
+    let orders =
+        JSON.parse(localStorage.getItem("orders")) || [];
+
+    let order = {
+
+        orderId: "ORD" + Date.now(),
+
+        customerName: name,
+
+        mobile: mobile,
+
+        address: address,
+
+        city: city,
+
+        pincode: pincode,
+
+        items: cartItems,
+
+        total: total,
+
+        status: "Processing",
+
+        orderDate: new Date().toLocaleString()
+
+    };
+
+    orders.push(order);
+
+    localStorage.setItem(
+        "orders",
+        JSON.stringify(orders)
+    );
+
+    localStorage.setItem(
+        "cartName",
+        cartItems[0].name
+    );
+
+    localStorage.removeItem("cartItems");
+
+    window.location.href =
+    "order-success.html";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+
+    <title>Wishlist</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="home-page">
+
+<nav class="navbar">
+    <h1>Fashion-BrandStore</h1>
+
+    <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="homepage.html">Brands</a></li>
+        <li><a href="wishlist.html">Wishlist</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="login.html">Logout</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li>
+            <button onclick="toggleTheme()" class="theme-btn">
+                🌙
+            </button>
+        </li>
+        
+    </ul>
+</nav>
+
+<section class="search-section">
+    <h2>My Wishlist</h2>
+    <p>Your favorite products appear here.</p>
+</section>
+
+<section class="categories" id="wishlistContainer"></section>
+
+<script>
+
+
+let wishItems =
+	JSON.parse(localStorage.getItem("wishItems")) || [];
+
+	let wishlistContainer =
+	document.getElementById("wishlistContainer");
+
+	if(wishItems.length > 0){
+
+	    wishItems.forEach(function(item,index){
+
+	        wishlistContainer.innerHTML += `
+
+	            <div class="product-card">
+
+	        	<img src="/AiFashionStores${item.image}">
+	        	
+	                <h3>${item.name}</h3>
+
+	                <p class="price">${item.price}</p>
+
+	                <p>⭐ 4.8</p>
+
+	                <p class="offer">Special Offer Available</p>
+
+	                <div class="product-buttons">
+
+	                    <button onclick="moveToCart(${index})">
+	                        Add To Cart
+	                    </button>
+
+	                    <button class="wishlist-btn"
+	                            onclick="removeWishlist(${index})">
+	                        Remove
+	                    </button>
+
+	                </div>
+
+	            </div>
+
+	        `;
+	    });
+
+	}
+	else{
+
+	    wishlistContainer.innerHTML = `
+
+	        <h2 style="color:white;text-align:center;width:100%;">
+	            Wishlist is Empty
+	        </h2>
+
+	    `;
+	}
+
+	function moveToCart(index){
+
+	    let cartItems =
+	    JSON.parse(localStorage.getItem("cartItems")) || [];
+
+	    cartItems.push(wishItems[index]);
+
+	    localStorage.setItem(
+	        "cartItems",
+	        JSON.stringify(cartItems)
+	    );
+
+	    alert("Added To Cart");
+
+	    window.location.href = "cart.html";
+	}
+
+	function removeWishlist(index){
+
+	    wishItems.splice(index,1);
+
+	    localStorage.setItem(
+	        "wishItems",
+	        JSON.stringify(wishItems)
+	    );
+
+	    location.reload();
+	}
+
+
+</script>
+<script>
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-mode");
+
+    if(document.body.classList.contains("light-mode")){
+
+        localStorage.setItem("theme","light");
+
+    }
+
+    else{
+
+        localStorage.setItem("theme","dark");
+
+    }
+
+}
+
+if(localStorage.getItem("theme") === "light"){
+
+    document.body.classList.add("light-mode");
+
+}
+
+</script>
+</body>
+</html>

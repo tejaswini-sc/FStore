@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>Products</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="home-page">
+
+<nav class="navbar">
+    <h1>Fashion-BrandStore</h1>
+
+    <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="homepage.html">Brands</a></li>
+        <li><a href="wishlist.html">Wishlist</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="login.html">Logout</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li>
+            <button onclick="toggleTheme()" class="theme-btn">
+                🌙
+            </button>
+        </li>
+        
+    </ul>
+</nav>
+
+<section class="search-section">
+    <h2 id="brandTitle"></h2>
+</section>
+
+<div class="sort-box">
+
+    <select id="sortSelect" onchange="sortProducts()">
+
+        <option value="">Sort Products</option>
+
+        <option value="low">Price Low to High</option>
+
+        <option value="high">Price High to Low</option>
+
+    </select>
+
+</div>
+<div class="search-bar">
+
+    <input type="text"
+    id="searchInput"
+    placeholder="Search Products..."
+    onkeyup="searchProducts()">
+
+</div>
+<section class="categories" id="productContainer"></section>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const category = params.get("category");
+const brand = params.get("brand");
+
+const brandTitle = document.getElementById("brandTitle");
+const container = document.getElementById("productContainer");
+
+const categoryNames = {
+	    "1": "Shoes",
+	    "2": "Watches",
+	    "3": "Makeup",
+	    "4": "Bags"
+	};
+
+	brandTitle.innerText =
+	    (categoryNames[category] || "Products") + " Products";
+let productList = [];
+
+fetch(`http://localhost:8080/AiFashionStores/products?category=${category}`)
+
+.then(response => response.json())
+
+.then(data => {
+
+    productList = data;
+
+    displayProducts(productList);
+
+})
+
+.catch(error => {
+
+    console.log(error);
+
+});
+
+function displayProducts(products){
+
+    container.innerHTML = "";
+
+    products.forEach(function(product, index){
+
+    	let imgPath = product.imageUrl;
+
+        container.innerHTML += `
+
+            <div class="product-card">
+
+        	<img src="http://localhost:8080/AiFashionStores${imgPath}" alt="${product.productName}">
+                <h3 onclick="openProduct(
+                    '${product.productName}',
+                    '${imgPath}',
+                    '₹${product.price}'
+                )">
+                ${product.productName}
+                </h3>
+
+                <p class="price">
+                Rs. ${product.price}
+                </p>
+
+                <p>
+                    ⭐ 4.${index % 5}
+                </p>
+
+                <p class="stock-status 
+                    ${index % 5 === 0 ? 'out-stock' : index % 3 === 0 ? 'few-stock' : 'in-stock'}">
+
+                    ${index % 5 === 0 ? 'Out Of Stock' : index % 3 === 0 ? 'Few Left' : 'In Stock'}
+
+                </p>
+
+                <select class="size-select">
+
+                ${category === "1" ? `
+
+                    <option>Select Size</option>
+                    <option>6 UK</option>
+                    <option>7 UK</option>
+                    <option>8 UK</option>
+                    <option>9 UK</option>
+                    <option>10 UK</option>
+
+                ` : category === "2" ? `
+
+                    <option>Select Strap</option>
+                    <option>Leather</option>
+                    <option>Metal</option>
+                    <option>Silicone</option>
+
+                ` : category === "3" ? `
+
+                    <option>Select Shade</option>
+                    <option>Light</option>
+                    <option>Medium</option>
+                    <option>Dark</option>
+                    <option>Nude</option>
+
+                ` : `
+
+                    <option>Select Size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+
+                `}
+
+                </select>
+
+                <div class="product-info">
+
+                    <p>✅ Cash On Delivery Available</p>
+                    <p>✅ Online Payment Available</p>
+                    <p>✅ 7 Days Return Policy</p>
+                    <p>🚚 Free Delivery</p>
+                    <p>⭐ Premium Quality Product</p>
+                    <p>🚚 Delivery in 4-6 Days</p>
+
+                </div>
+
+                <div class="product-buttons">
+
+                    <button onclick="addToCart(
+                        '${product.productName}',
+                        '${imgPath}',
+                        '₹${product.price}'
+                    )">
+                        Add to Cart
+                    </button>
+
+                    <button class="wishlist-btn" onclick="addToWishlist(
+                        '${product.productName}',
+                        '${imgPath}',
+                        '₹${product.price}'
+                    )">
+                        Wishlist
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+    });
+
+}
+function searchProducts(){
+
+    let searchValue =
+    document.getElementById("searchInput")
+    .value.toLowerCase();
+
+    let filteredProducts =
+    productList.filter(function(product){
+
+        return product.productName
+        .toLowerCase()
+        .includes(searchValue);
+
+    });
+
+    displayProducts(filteredProducts);
+}
+
+function sortProducts(){
+
+    let value = document.getElementById("sortSelect").value;
+
+    if(value === "low"){
+        productList.sort(function(a,b){
+            return a.price - b.price;
+        });
+    }
+
+    else if(value === "high"){
+        productList.sort(function(a,b){
+            return b.price - a.price;
+        });
+    }
+
+    displayProducts(productList);
+}
+
+function openProduct(name, image, price){
+
+    localStorage.setItem("detailName", name);
+    localStorage.setItem("detailImage", image);
+    localStorage.setItem("detailPrice", price);
+
+    window.location.href = "product-details.html";
+}
+
+function addToCart(name, image, price){
+
+    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+    let product = {
+        name: name,
+        image: image,
+        price: price
+    };
+
+    cartItems.push(product);
+
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+    showCartToast("🛒 Product added to cart");
+}
+
+function addToWishlist(name, image, price){
+
+    localStorage.setItem("wishName", name);
+    localStorage.setItem("wishImage", image);
+    localStorage.setItem("wishPrice", price);
+
+    showToast("❤️ Product added to wishlist");
+}
+
+function showToast(message){
+
+    let toast = document.createElement("div");
+
+    toast.className = "toast";
+
+    toast.innerText = message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(function(){
+        toast.remove();
+    },2500);
+}
+
+function showCartToast(message){
+
+    let toast = document.createElement("div");
+
+    toast.className = "cart-toast";
+
+    toast.innerText = message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(function(){
+        toast.remove();
+    },2500);
+}
+
+</script>
+<script>
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-mode");
+
+    if(document.body.classList.contains("light-mode")){
+
+        localStorage.setItem("theme","light");
+
+    }
+
+    else{
+
+        localStorage.setItem("theme","dark");
+
+    }
+
+}
+
+if(localStorage.getItem("theme") === "light"){
+
+    document.body.classList.add("light-mode");
+
+}
+
+</script>
+</body>
+</html>

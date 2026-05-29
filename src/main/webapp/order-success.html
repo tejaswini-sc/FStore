@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+
+    <title>Order Success</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</head>
+
+<body class="auth-page">
+
+    <div class="container">
+
+        <div class="login-box">
+
+            <h1>🎉 Order Placed Successfully</h1>
+
+            <p>
+                Thank you for shopping with Fashion-BrandStore.
+            </p>
+
+            <p>
+                Your order will be delivered soon.
+            </p>
+
+            <!-- ORDERED PRODUCT -->
+
+            <p id="orderedProduct"></p>
+
+            <br>
+
+            <a href="homepage.html">
+
+                <button>
+                    Continue Shopping
+                </button>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- SCRIPT -->
+
+    <script>
+
+    document.getElementById("orderedProduct").innerText =
+
+    "Ordered Product: " +
+
+    localStorage.getItem("cartName");
+
+    </script>
+<audio id="successSound" autoplay>
+
+    <source src="https://www.soundjay.com/human/sounds/applause-8.mp3" type="audio/mpeg">
+
+</audio>
+
+<script>
+
+/* CONFETTI */
+
+confetti({
+
+    particleCount:250,
+
+    spread:180,
+
+    origin:{ y:0.6 }
+
+});
+
+
+/* EXTRA BURSTS */
+
+setTimeout(function(){
+
+    confetti({
+
+        particleCount:180,
+
+        angle:60,
+
+        spread:100,
+
+        origin:{ x:0 }
+
+    });
+
+},500);
+
+
+setTimeout(function(){
+
+    confetti({
+
+        particleCount:180,
+
+        angle:120,
+
+        spread:100,
+
+        origin:{ x:1 }
+
+    });
+
+},900);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title>Cart</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="home-page cart-page">
+
+<nav class="navbar">
+    <h1>Fashion-BrandStore</h1>
+
+    <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="homepage.html">Brands</a></li>
+        <li><a href="wishlist.html">Wishlist</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li><a href="login.html">Logout</a></li>
+        <li>
+            <button onclick="toggleTheme()" class="theme-btn">
+                🌙
+            </button>
+        </li>
+        
+    </ul>
+</nav>
+
+<section class="search-section">
+    <h2>Shopping Cart</h2>
+    <p>Your selected products appear here.</p>
+</section>
+
+<section class="categories" id="cartContainer"></section>
+
+<div class="coupon-panel">
+
+    <h2>Available Coupons</h2>
+
+    <div class="coupon-card">
+        <div>
+            <h3>FASHION10</h3>
+            <p>Get 10% off on your cart</p>
+        </div>
+
+        <button onclick="useCoupon('FASHION10')">Use</button>
+    </div>
+
+    <div class="coupon-card">
+        <div>
+            <h3>WELCOME20</h3>
+            <p>Get ₹200 off above ₹2000</p>
+        </div>
+
+        <button onclick="useCoupon('WELCOME20')">Use</button>
+    </div>
+
+    <div class="coupon-apply">
+        <input type="text" id="couponInput" placeholder="Enter Coupon Code">
+        <button type="button" onclick="applyCoupon()">Apply</button>
+    </div>
+
+</div>
+
+<section class="cart-total-section">
+    <h2>Total Amount</h2>
+    <p id="totalPrice"></p>
+
+    <a href="checkout.html">
+        <button>Proceed To Checkout</button>
+    </a>
+    <button onclick="clearCart()" class="wishlist-btn">
+        Clear Cart
+    </button>
+</section>
+
+<script>
+let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+let cartContainer = document.getElementById("cartContainer");
+let totalPriceElement = document.getElementById("totalPrice");
+
+let total = 0;
+let finalTotal = 0;
+
+if(cartItems.length > 0){
+
+    cartItems.forEach(function(item, index){
+
+    	let priceNumber = parseFloat(
+    		    item.price.replace("Rs.","")
+    		              .replace("₹","")
+    		              .replace(",","")
+    		              .trim()
+    		);        let quantity = item.qty || 1;
+
+        total = total + (priceNumber * quantity);
+
+        let today = new Date();
+        let deliveryDays = 3 + quantity + index;
+        let deliveryDate = new Date(today);
+        deliveryDate.setDate(today.getDate() + deliveryDays);
+        let formattedDate = deliveryDate.toDateString();
+
+        cartContainer.innerHTML += `
+            <div class="product-card">
+        	<img src="http://localhost:8080/AiFashionStores${item.image}">
+                <h3>${item.name}</h3>
+
+                <p class="price">${item.price}</p>
+
+                <div class="quantity-box">
+                    <button onclick="decreaseQty(${index})">-</button>
+                    <span>${quantity}</span>
+                    <button onclick="increaseQty(${index})">+</button>
+                </div>
+
+                <p>⭐ 4.8</p>
+
+                <p class="offer">Special Offer Available</p>
+                <p class="delivery-date">
+                    🚚 Expected Delivery: ${formattedDate}
+                </p>
+
+                <div class="product-buttons">
+                    <button onclick="buyNow(${index})">Buy Now</button>
+
+                    <button class="wishlist-btn" onclick="removeCartItem(${index})">
+                        Remove
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    finalTotal = total;
+    totalPriceElement.innerText =
+    "₹" + finalTotal;
+}
+else{
+    cartContainer.innerHTML = `
+        <h2 style="color:white; width:100%; text-align:center;">
+            Cart is Empty
+        </h2>
+    `;
+
+    totalPriceElement.innerText = "₹0";
+}
+
+function increaseQty(index){
+    cartItems[index].qty = (cartItems[index].qty || 1) + 1;
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    location.reload();
+}
+
+function decreaseQty(index){
+    if((cartItems[index].qty || 1) > 1){
+        cartItems[index].qty = (cartItems[index].qty || 1) - 1;
+    }
+
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    location.reload();
+}
+
+function removeCartItem(index){
+    cartItems.splice(index, 1);
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    location.reload();
+}
+
+function buyNow(index){
+    let selectedItem = cartItems[index];
+
+    localStorage.setItem("cartName", selectedItem.name);
+    localStorage.setItem("cartImage", selectedItem.image);
+    localStorage.setItem("cartPrice", selectedItem.price);
+
+    window.location.href = "checkout.html";
+}
+
+function useCoupon(code){
+    document.getElementById("couponInput").value = code;
+}
+
+function applyCoupon(){
+
+    let coupon = document.getElementById("couponInput").value;
+
+    if(coupon === "FASHION10"){
+
+        let discount = finalTotal * 0.10;
+        finalTotal = total - discount;
+
+        totalPriceElement.innerText = "₹" + finalTotal;
+
+        showCartToast("🎉 FASHION10 Applied");
+    }
+
+    else if(coupon === "WELCOME20" && total >= 2000){
+
+        finalTotal = total - 200;
+
+        totalPriceElement.innerText = "₹" + finalTotal;
+
+        showCartToast("🎉 ₹200 Discount Applied");
+    }
+
+    else{
+        showCartToast("❌ Invalid Coupon");
+    }
+}
+
+function clearCart(){
+    localStorage.removeItem("cartItems");
+    location.reload();
+}
+</script>
+<script>
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-mode");
+
+    if(document.body.classList.contains("light-mode")){
+
+        localStorage.setItem("theme","light");
+
+    }
+
+    else{
+
+        localStorage.setItem("theme","dark");
+
+    }
+
+}
+
+if(localStorage.getItem("theme") === "light"){
+
+    document.body.classList.add("light-mode");
+
+}
+
+</script>
+
+</body>
+</html>

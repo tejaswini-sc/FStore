@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fashion Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="home-page">
+
+    <nav class="navbar">
+    <h1>Fashion-BrandStore</h1>
+
+    <ul>
+        <li><a href="homepage.html">Home</a></li>
+        <li><a href="brands.html">Brands</a></li>
+        <li><a href="wishlist.html">Wishlist</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="login.html">Logout</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li>
+            <button onclick="toggleTheme()" class="theme-btn">
+                🌙
+            </button>
+        </li>
+        
+    </ul>
+</nav>
+
+    <section class="slider">
+
+        <div class="slide active">
+            <div class="slide-text">
+                <h2>Premium Fashion Brands</h2>
+                <p>Discover watches, shoes, bags, dresses and makeup brands in one smart platform.</p>
+                <button>Explore Now</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-text">
+                <h2>AI Picks For You</h2>
+                <p>Get smart brand and product recommendations based on your style.</p>
+                <button>View Brands</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-text">
+                <h2>Luxury Meets Technology</h2>
+                <p>Shop branded lifestyle products with a modern AI-powered experience.</p>
+                <button>Start Shopping</button>
+            </div>
+        </div>
+
+    </section>
+
+        <section class="search-section">
+        <h2>Find Your Favorite Brand</h2>
+
+        <input 
+            type="text"
+            id="searchInput"
+            placeholder="Search Watches, Shoes, Dresses, Makeup, Bags..."
+        >
+
+        <button onclick="searchCategory()">
+            Search
+        </button>
+    </section>
+
+    <section class="categories">
+
+        <a href="brands.html?category=watches" class="premium-card">
+            <h3>Watches</h3>
+            <p>Fastrack, Rolex, Rado...</p>
+        </a>
+
+        <a href="brands.html?category=shoes" class="premium-card">
+            <h3>Shoes</h3>
+            <p>Puma, Adidas, Nike...</p>
+        </a>
+
+        <a href="brands.html?category=makeup" class="premium-card">
+            <h3>Makeup</h3>
+            <p>Maybelline, Lakme, Sugar...</p>
+        </a>
+
+        <a href="brands.html?category=bags" class="premium-card">
+            <h3>Bags</h3>
+            <p>Lavie, Skybags, Safari...</p>
+        </a>
+
+        <a href="brands.html?category=dresses" class="premium-card">
+            <h3>Dresses</h3>
+            <p>Westside, Lifestyle, Zudio, H&M...</p>
+        </a>
+
+    </section>
+
+    <script>
+function searchCategory(){
+
+    let input = document.getElementById("searchInput").value.toLowerCase();
+
+    if(input.includes("watch") || input.includes("watches")){
+        window.location.href = "brands.html?category=watches";
+    }
+    else if(input.includes("shoe") || input.includes("shoes")){
+        window.location.href = "brands.html?category=shoes";
+    }
+    else if(input.includes("makeup") || input.includes("cosmetic")){
+        window.location.href = "brands.html?category=makeup";
+    }
+    else if(input.includes("bag") || input.includes("bags")){
+        window.location.href = "brands.html?category=bags";
+    }
+    else if(input.includes("dress") || input.includes("dresses")){
+        window.location.href = "brands.html?category=dresses";
+    }
+    else{
+        alert("Product category not found");
+    }
+}
+</script>
+
+<script src="js/script.js"></script>
+</script>
+
+<script>
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-mode");
+
+    if(document.body.classList.contains("light-mode")){
+
+        localStorage.setItem("theme","light");
+
+    }
+
+    else{
+
+        localStorage.setItem("theme","dark");
+
+    }
+
+}
+
+if(localStorage.getItem("theme") === "light"){
+
+    document.body.classList.add("light-mode");
+
+}
+
+</script>
+</body>
+</html>
