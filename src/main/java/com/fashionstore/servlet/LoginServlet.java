@@ -50,12 +50,15 @@ public class LoginServlet extends HttpServlet {
 
         if(user != null) {
 
-            HttpSession session =
-                    req.getSession();
+            HttpSession session = req.getSession();
 
             session.setAttribute("user", user);
 
-            out.print("Login Successful");
+            out.print("SUCCESS|"
+                    + user.getName() + "|"
+                    + user.getEmail() + "|"
+                    + user.getPhone() + "|"
+                    + user.getAddress());
 
         }
         else {

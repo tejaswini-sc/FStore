@@ -106,8 +106,15 @@ let orders =
 
 	    orders.forEach(function(order){
 
-	        let firstItem =
-	        order.items[0];
+	        if(
+	            !order.items ||
+	            order.items.length === 0 ||
+	            !order.items[0]
+	        ){
+	            return;
+	        }
+
+	        let firstItem = order.items[0];
 
 	        ordersContainer.innerHTML += `
 
@@ -159,8 +166,7 @@ let orders =
 
 	    });
 
-	}
-	else{
+	}	else{
 
 	    ordersContainer.innerHTML = `
 

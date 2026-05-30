@@ -81,16 +81,27 @@ async function loginUser(event){
             body:formData
         });
 
-        let result = await response.text();
 
-        if(result.includes("Successful")){
-            localStorage.setItem("loggedUser", email);
-            alert("Login Successful");
+    	
+    	let result = await response.text();
 
-            window.location.href =
-            "homepage.html";
+    	console.log(result);
 
-        }
+    	alert(result);
+    	
+    	if(result.startsWith("SUCCESS")){
+
+    	    let data = result.split("|");
+
+    	    localStorage.setItem("profileName", data[1]);
+    	    localStorage.setItem("loggedUser", data[2]);
+    	    localStorage.setItem("profilePhone", data[3]);
+    	    localStorage.setItem("profileAddress", data[4]);
+
+    	    alert("Login Successful");
+
+    	    window.location.href = "homepage.html";
+    	}
 
         else{
 
