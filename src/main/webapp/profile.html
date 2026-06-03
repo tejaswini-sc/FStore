@@ -37,7 +37,9 @@
         <p id="profileEmail"></p>
         <p id="profilePhone"></p>
 
-        <button>Edit Profile</button>
+<button onclick="editProfile()">
+    Edit Profile
+</button>
     </div>
 
     <div class="profile-right">
@@ -63,11 +65,12 @@
         </div>
 
         <div class="large-box">
-            <h2>Recent Orders</h2>
-            <p>Rolex Luxury Watch - Delivered</p>
-            <p>Nike Sneakers - Shipped</p>
-            <p>Lakme Lipstick - Processing</p>
-        </div>
+
+    <h2>Recent Orders</h2>
+
+    <div id="recentOrders"></div>
+
+</div>
 
     </div>
 
@@ -94,11 +97,96 @@ document.getElementById("wishlistCount").innerText = wishItems.length;
 let orders =
 	JSON.parse(localStorage.getItem("orders")) || [];
 
+console.log("Orders:", orders);
+console.log("Wishlist:", wishItems);
+console.log("Order Count:", orders.length);
+console.log("Wishlist Count:", wishItems.length);
+
+
+
 	document.getElementById("orderCount").innerText =
 	orders.length;
 	
 	document.getElementById("avatar").innerText =
 		savedName.charAt(0).toUpperCase();
+	
+	
+	let recentOrdersDiv =
+		document.getElementById("recentOrders");
+
+		if(orders.length > 0){
+
+		    let latestOrders =
+		    orders.slice(-3).reverse();
+
+		    latestOrders.forEach(function(order){
+
+		        if(order.items && order.items.length > 0){
+
+		            recentOrdersDiv.innerHTML += `
+
+		                <p>
+		                    ${order.items[0].name}
+		                    - Ordered
+		                </p>
+
+		            `;
+
+		        }
+
+		    });
+
+		}
+		else{
+
+		    recentOrdersDiv.innerHTML =
+
+		    "<p>No Orders Yet</p>";
+
+		}
+		
+		
+		
+		function editProfile(){
+
+		    let newName =
+		    prompt("Enter Name", savedName);
+
+		    let newPhone =
+		    prompt("Enter Phone", savedPhone);
+
+		    let newAddress =
+		    prompt("Enter Address", savedAddress);
+
+		    if(newName){
+
+		        localStorage.setItem(
+		            "profileName",
+		            newName
+		        );
+
+		    }
+
+		    if(newPhone){
+
+		        localStorage.setItem(
+		            "profilePhone",
+		            newPhone
+		        );
+
+		    }
+
+		    if(newAddress){
+
+		        localStorage.setItem(
+		            "profileAddress",
+		            newAddress
+		        );
+
+		    }
+
+		    location.reload();
+		}
 </script>
 <script>
 

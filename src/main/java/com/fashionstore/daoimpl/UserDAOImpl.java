@@ -87,5 +87,43 @@ public class UserDAOImpl implements UserDAO {
 
         return user;
     }
+    
+    
+    public boolean resetPassword(
+            String email,
+            String password) {
+
+        boolean status = false;
+
+        try {
+
+            String query =
+
+            "update users set password=? where email=?";
+
+            PreparedStatement ps =
+            con.prepareStatement(query);
+
+            ps.setString(1, password);
+            ps.setString(2, email);
+
+            int rows =
+            ps.executeUpdate();
+
+            if(rows > 0){
+
+                status = true;
+
+            }
+
+        }
+        catch(Exception e){
+
+            e.printStackTrace();
+
+        }
+
+        return status;
+    }
 
 }
